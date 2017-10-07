@@ -134,6 +134,7 @@ function update() {
 
     // collision Detection
     this.physics.arcade.overlap(player, enemy, colEmyOne, null, this); 
+    this.physics.arcade.overlap(player, enemy, colEmyOne, null, this);
 
     player.body.velocity.x = 0; 
     enemy.body.velocity.x = 0;
@@ -216,7 +217,7 @@ function resetPlayer() {
     player.kill();
     setTimeout(function() {
                 timer.stop();
-                player.reset(player.x - 200, player.y - 100);
+                player.reset();
             }, 2000);  
 }
 
