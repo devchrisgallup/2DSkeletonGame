@@ -26,6 +26,7 @@ var playerSpeed = 105;
 var enemySpeed = 88; 
 var playerJumpCount = 0;
 var jumpTimer = 0; 
+var canBoostJump = false; 
 var enemy;
 var endEnemy; 
 var endFlip = true; 
@@ -33,6 +34,7 @@ var flip = true;
 var running = true;
 var burstFlag = false; 
 var particlesFlag = false; 
+var onGround = true; 
 var burst;
 var particlesBurst;
 var jump;
@@ -73,6 +75,7 @@ function create() {
     player.anchor.setTo(0.5, 0.5);  
     player.animations.add("jump",[2], 1, true); 
     player.animations.add("run",[3,4,5,6,7,8], 7, true); 
+    player.animations.add("stand",[5], true);
     this.physics.arcade.enable(player); 
     this.camera.follow(player); 
     player.body.collideWorldBounds = true;
@@ -117,7 +120,8 @@ function create() {
         right: this.input.keyboard.addKey(Phaser.Keyboard.D),
         left: this.input.keyboard.addKey(Phaser.Keyboard.A),
         up: this.input.keyboard.addKey(Phaser.Keyboard.W),
-        shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP), };
+        shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP),
+        longjump: this.input.keyboard.addKey(Phaser.Keyboard.J) };
 }
 
 function update() {
@@ -141,16 +145,30 @@ function update() {
     endEnemy.body.velocity.x = 0;
 
     if (controls.up.isDown && (player.body.onFloor() || player.body.touching.down && this.now > jumpTimer)) {
+        canBoostJump = true; 
         jump.play();
-        player.body.velocity.y = -600; 
+        player.body.velocity.y = -580; 
         jumpTimer = this.time.now + 750; 
         player.animations.play("jump"); 
     }
 
-    if (running) {
+    if (controls.right.isDown) {
         player.animations.play("run");
         player.scale.setTo(1, 1); 
         player.body.velocity.x += playerSpeed; 
+    }
+
+    if (controls.left.isDown) {
+        player.animations.play("run");
+        player.scale.setTo(-1, 1); 
+        player.body.velocity.x -= playerSpeed; 
+    }
+
+    if (controls.longjump.isDown && canBoostJump) {
+        jump.play();
+        player.body.velocity.y = -580; 
+        jumpTimer = this.time.now + 750;     
+        canBoostJump = false; 
     }
 
     if (burstFlag) {
