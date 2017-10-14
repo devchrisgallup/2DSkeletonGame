@@ -42,6 +42,8 @@ var splashSound;
 var playerDiedSound; 
 var score = 0; 
 var scoreText; 
+var boostCount = 0; 
+var boostText; 
 var winText;
 var refreshIntervalId;
 var winSound; 
@@ -59,8 +61,11 @@ function create() {
     // Create a delayed event 3 seconds from now
     timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 3, this.endTimer, this);
     // Create score text
-    scoreText = game.add.text(this.game.width / 2,this.game.height - 35,"Score: ", {font: '32px Arial', fill:  '#fff'});
+    scoreText = game.add.text(this.game.width / 2,this.game.height - 55,"Score: ", {font: '46px Arial', fill:  '#fff'});
     scoreText.fixedToCamera = true; 
+    // Create boost text
+    boostText = game.add.text(this.game.width / 2 - 300,this.game.height - 55,"Score: ", {font: '46px Arial', fill:  '#fff'});
+    boostText.fixedToCamera = true; 
 
     // sound effect settings
     jump = this.game.add.audio("jump"); 
@@ -131,6 +136,7 @@ function update() {
     particlesFlag = false;
 
     scoreText.text = "Score: " + score;
+    boostText.text = "Boost(j)" + boostCount; 
 
     this.physics.arcade.collide(player, layer);
     this.physics.arcade.collide(enemy, layer);
@@ -164,7 +170,8 @@ function update() {
         player.body.velocity.x -= playerSpeed; 
     }
 
-    if (controls.longjump.isDown && canBoostJump) {
+    if (controls.longjump.isDown && canBoostJump && boostCount > 0) {
+        boostCount--; 
         jump.play();
         player.body.velocity.y = -580; 
         jumpTimer = this.time.now + 750;     
@@ -226,6 +233,9 @@ function update() {
         winText.fixedToCamera = true;
     }
 }
+
+// start boost count
+setInterval(function() {boostCount++;},5000);
 
 function resetPlayer() {
     score = 0; 
