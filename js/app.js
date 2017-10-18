@@ -44,6 +44,8 @@ var score = 0;
 var scoreText; 
 var boostCount = 0; 
 var boostText; 
+var hintText; 
+var hideTextBool = true; 
 var winText;
 var refreshIntervalId;
 var winSound; 
@@ -66,6 +68,9 @@ function create() {
     // Create boost text
     boostText = game.add.text(this.game.width / 2 - 300,this.game.height - 55,"Score: ", {font: '46px Arial', fill:  '#fff'});
     boostText.fixedToCamera = true; 
+    // Create hint text
+    hintText = game.add.text(this.game.width / 2 - 300,this.game.height / 2,"Hint: ", {font: '46px Arial', fill:  '#fff'});
+    hintText.fixedToCamera = true; 
 
     // sound effect settings
     jump = this.game.add.audio("jump"); 
@@ -136,7 +141,12 @@ function update() {
     particlesFlag = false;
 
     scoreText.text = "Score: " + score;
-    boostText.text = "Boost(j)" + boostCount; 
+    boostText.text = "Boost(j)" + boostCount;
+    if (hideTextBool) {
+        hintText.text = "Boost count added every 5 seconds";
+    } else {
+        hintText.text = ""; 
+    }
 
     this.physics.arcade.collide(player, layer);
     this.physics.arcade.collide(enemy, layer);
@@ -236,6 +246,11 @@ function update() {
 
 // start boost count
 setInterval(function() {boostCount++;},5000);
+// hide boost text hint
+setTimeout(function() {
+    hideTextBool = false; 
+},3000);
+
 
 function resetPlayer() {
     score = 0; 
