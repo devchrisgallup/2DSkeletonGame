@@ -15,6 +15,8 @@ function preload() {
     game.load.audio("playerDiedSound", "assets/playerdiedsound.wav"); 
     game.load.audio("splash", "assets/splash.wav"); 
     game.load.audio("youwin", "assets/winsound.wav"); 
+    // weapon assets
+    game.load.image('bullet', 'assets/bullet.png');
 }
 
 // variables
@@ -26,6 +28,7 @@ var playerSpeed = 105;
 var enemySpeed = 88; 
 var playerJumpCount = 0;
 var jumpTimer = 0; 
+var weapon; 
 var canBoostJump = false; 
 var enemy;
 var endEnemy; 
@@ -90,6 +93,16 @@ function create() {
     this.camera.follow(player); 
     player.body.collideWorldBounds = true;
 
+    // create player weapon 
+    weapon = this.game.add.weapon(30, 'bullet'); 
+    weapon.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
+    weapon.bulletLifesapn = 1000; 
+    weapon.bulletSpeed = 900; 
+    weapon.fireRate = 200;
+    weapon.bulletWorldWrap = false; 
+    // player weapon tracking
+    weapon.trackSprite(player, 0, 0, true);
+
     enemy = this.add.sprite(1670, 1150, "enemy"); 
     enemy.anchor.setTo(0.5,0.5); 
     enemy.animations.add("run",[3,4,5,6,7,8], 7, true); 
@@ -131,7 +144,9 @@ function create() {
         left: this.input.keyboard.addKey(Phaser.Keyboard.A),
         up: this.input.keyboard.addKey(Phaser.Keyboard.W),
         shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP),
-        longjump: this.input.keyboard.addKey(Phaser.Keyboard.J) };
+        longjump: this.input.keyboard.addKey(Phaser.Keyboard.J),
+        fireButton: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    };
 }
 
 function update() {
@@ -159,6 +174,10 @@ function update() {
     player.body.velocity.x = 0; 
     enemy.body.velocity.x = 0;
     endEnemy.body.velocity.x = 0;
+
+    if (controls.fireButton.isDown) {
+        weapon.fire(); 
+    }
 
     if (controls.up.isDown && (player.body.onFloor() || player.body.touching.down && this.now > jumpTimer)) {
         canBoostJump = true; 
