@@ -51,7 +51,8 @@ var hintText;
 var hideTextBool = true; 
 var winText;
 var refreshIntervalId;
-var winSound; 
+var winSound;
+var test = 0;  
 
 function create() {
     this.stage.backgroundColor = "#000"; 
@@ -91,15 +92,15 @@ function create() {
     player.animations.add("stand",[5], true);
     this.physics.arcade.enable(player); 
     this.camera.follow(player); 
-    player.body.collideWorldBounds = true;
+    player.body.collideWorldBounds = false;
 
     // create player weapon 
-    weapon = this.game.add.weapon(30, 'bullet'); 
-    weapon.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
-    weapon.bulletLifesapn = 1000; 
+    weapon = this.game.add.weapon(5, 'bullet'); 
+    weapon.bulletLifesapn = 500;
     weapon.bulletSpeed = 900; 
     weapon.fireRate = 200;
-    weapon.bulletWorldWrap = false; 
+    weapon.trackRotation = true; 
+    weapon.bulletWorldWrap = true; 
     // player weapon tracking
     weapon.trackSprite(player, 0, 0, true);
 
