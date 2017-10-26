@@ -157,9 +157,9 @@ function update() {
     particlesFlag = false;
 
     scoreText.text = "Score: " + score;
-    boostText.text = "Boost(j)" + boostCount;
+    boostText.text = "Boost" + boostCount;
     if (hideTextBool) {
-        hintText.text = "Boost count added every 5 seconds";
+        hintText.text = "Press J For A Second Jump \n               Uses Score";
     } else {
         hintText.text = ""; 
     }
@@ -172,6 +172,7 @@ function update() {
     this.physics.arcade.overlap(player, enemy, colEmyOne, null, this); 
     this.physics.arcade.overlap(player, endEnemy, colEmyOne, null, this);
     this.physics.arcade.overlap(weapon.bullets, enemy, killEnemy, null, this);
+    this.physics.arcade.overlap(weapon.bullets, endEnemy, killEndEnemy, null, this);
 
     player.body.velocity.x = 0; 
     enemy.body.velocity.x = 0;
@@ -265,8 +266,8 @@ function update() {
     }
 }
 
-// start boost count
-setInterval(function() {boostCount++;},5000);
+// // start boost count
+// setInterval(function() {boostCount++;},5000);
 // hide boost text hint
 setTimeout(function() {
     hideTextBool = false; 
@@ -281,7 +282,11 @@ function resetPlayer() {
     player.kill();
     setTimeout(function() {
                 timer.stop();
-                player.reset();
+                score = 0;
+                player.reset(); 
+                player.revive(); 
+                player.x = 100; 
+                player.y = 1150; 
             }, 2000);  
 }
 
@@ -342,12 +347,19 @@ function colEmyOne() {
 }
 
 function killEnemy() {
+    score++; 
     playerDiedSound.play();
     enemy.kill(); 
 }
 
-function timerStart() {
-    refreshIntervalId = setInterval(function() { score++; }, 1000);   
+function killEndEnemy() {
+    score++; 
+    playerDiedSound.play();
+    endEnemy.kill(); 
 }
 
-window.addEventListener('load', timerStart, false); 
+// function timerStart() {
+//     refreshIntervalId = setInterval(function() { score++; }, 1000);   
+// }
+
+// window.addEventListener('load', timerStart, false); 
